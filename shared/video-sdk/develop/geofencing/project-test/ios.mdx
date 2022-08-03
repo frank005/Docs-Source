@@ -18,9 +18,9 @@
 
 6. Try excluding a region from <Vg k="AGORA_BACKEND" />.
 
-    In Xcode, in `ViewController`, locate the `initializeAgoraEngine` method and replace `agoraRtcEngineConfig.areaCode = AgoraAreaCode.NA.rawValue` with the following code:
+    In Xcode, in `ViewController`, locate the `initializeAgoraEngine` method and replace `config.areaCode = AgoraAreaCodeType.NA` with the following code:
     ```swift
     // Exclude Mainland China from the regions for connection.
-    agoraRtcEngineConfig.areaCode = AgoraAreaCode.GLOB.rawValue ^ AgoraAreaCode.CN.rawValue
+    config.areaCode = AgoraAreaCodeType.global.rawValue ^ AgoraAreaCodeType.CN.rawValue
     ```
 </PlatformWrapper>
