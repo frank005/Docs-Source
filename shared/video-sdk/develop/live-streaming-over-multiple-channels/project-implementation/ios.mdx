@@ -288,8 +288,7 @@ the following steps:
         var secondChannelDelegate:SecondChannelDelegate = SecondChannelDelegate()
         ```
 
-    2.  In your `ViewController.swift` file, add the following
-        `AgoraRtcEngineDelegate` event handler class:
+    2.  In `ViewController.swift`, add the following code before `extension ViewController: AgoraRtcEngineDelegate`:
 
         ``` swift
         class SecondChannelDelegate: NSObject, AgoraRtcEngineDelegate {
