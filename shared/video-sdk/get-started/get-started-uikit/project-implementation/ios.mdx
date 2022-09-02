@@ -1,59 +1,87 @@
 <PlatformWrapper platform="ios">
+
+When a user opens the <Vpl k="CLIENT" />, you initialize <Vg k="UIK" />. When the user taps a button, the <Vpl k="CLIENT" /> joins or leaves a channel. When another user joins the same channel, their video and audio is rendered in the <Vpl k="CLIENT" />. This simple workflow enables you to concentrate on implementing <Vg k="COMPANY" /> features and not UX bells and whistles.
+
+To integrate real-time video with a ready-made user interface into your <Vpl k="CLIENT" /> using <Vg k="UIK" />:
+
 <CH.Scrollycoding>
 
-### Import the <Vg k="UIK" /> classes:
+### Import the <Vg k="UIK" /> classes
 
-In `ViewController`, add the following line after `import UIKit`:
+In `ViewController`, add the provided code sample after `import UIKit`:
 
-```swift ViewController focus=1
+```swift ViewController.swift focus=1:2
+import SwiftUI
 import AgoraUIKit
-```
 
----
+class ViewController: UIViewController {
+    // Fill the App ID of your project generated on Agora Console.
+    let appId = ""
+    
+    // Fill the temp token generated on Agora Console.
+    let token = ""
+    
+    // Fill the channel name.
+    let channelName = ""
+    
+    // Create the view object.
+    var agoraView: AgoraVideoViewer!
+}
+```
 
 If Xcode does not recognize this import, click **File** &gt; **Packages** &gt; **Reset Package Caches**.
 
-### Create the variables that you use to initiate and join a channel:
+---
 
-In `ViewController.swift`, add the following lines after `class ViewController: UIViewController {`:
+### Add the variables to initiate and join a channel
 
-```swift ViewController focus=2:6
- // Fill the App ID of your project generated on Agora Console.
- let appId = "";
+In `ViewController.swift`, add the provided code sample after `class ViewController: UIViewController`:
 
-// Fill the temp token generated on Agora Console.
-let token = ""
+```swift ViewController.swift focus=3:16
 
-// Fill the channel name.
-let channelName = ""
-
-// Create the view object.
-var agoraView: AgoraVideoViewer!
 ```
 ---
 
-### Create a function that initializes an `AgoraVideoViewer` instance and joins a channel:
+### Create a function that initializes an `AgoraVideoViewer` instance and joins a channel
 
-In `ViewController.swift`, add the following line after `var agoraView: AgoraVideoViewer!`:
+In `ViewController.swift`, add the provided code sample after `var agoraView: AgoraVideoViewer!`:
 
-```swift ViewController focus=2:14
-func initializeAndJoinChannel(){
+```swift ViewController.swift focus=14:32
+import SwiftUI
+import AgoraUIKit
 
-    agoraView = AgoraVideoViewer(
-        connectionData: AgoraConnectionData(
-            appId: appId,
-            rtcToken: token
+class ViewController: UIViewController {
+    // Fill the App ID of your project generated on Agora Console.
+    let appId = ""
+    
+    // Fill the temp token generated on Agora Console.
+    let token = ""
+    
+    // Fill the channel name.
+    let channelName = ""
+    
+    // Create the view object.
+    var agoraView: AgoraVideoViewer!
+
+    func initializeAndJoinChannel(){
+
+        agoraView = AgoraVideoViewer(
+            connectionData: AgoraConnectionData(
+                appId: appId,
+                rtcToken: token
+            )
         )
-    )
-    agoraView.fills(view: self.view)
+        agoraView.fills(view: self.view)
 
-    agoraView.join(
-      channel: channelName,
-      with: token,
-      as: .broadcaster
-    )
+        agoraView.join(
+            channel: channelName,
+            with: token,
+            as: .broadcaster
+        )
+    }
 }
 ```
+
 ---
 
 ### Start and stop your  <Vpl k="CLIENT"/>
@@ -61,16 +89,50 @@ func initializeAndJoinChannel(){
 When the view is loaded, call `initializeAndJoinChannel` to join a channel. When the user leaves the channel, clean up all the resources used by your  <Vpl k="CLIENT"/>.
 In `ViewController.swift`, update the `viewDidLoad` function. For example:
 
-```swift ViewController focus=1:9
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        // Do any additional setup after loading the view.
-        initializeAndJoinChannel()
+```swift ViewController.swift focus=33:43
+import SwiftUI
+import AgoraUIKit
+
+class ViewController: UIViewController {
+    // Fill the App ID of your project generated on Agora Console.
+    let appId = ""
+    
+    // Fill the temp token generated on Agora Console.
+    let token = ""
+    
+    // Fill the channel name.
+    let channelName = ""
+    
+    // Create the view object.
+    var agoraView: AgoraVideoViewer!
+
+    func initializeAndJoinChannel(){
+
+        agoraView = AgoraVideoViewer(
+            connectionData: AgoraConnectionData(
+                appId: appId,
+                rtcToken: token
+            )
+        )
+        agoraView.fills(view: self.view)
+
+        agoraView.join(
+            channel: channelName,
+            with: token,
+            as: .broadcaster
+        )
     }
 
- override func viewDidDisappear(_ animated: Bool) {
-    super.viewDidDisappear(animated)
-    agoraView.exit()
+    override func viewDidLoad() {
+        super.viewDidLoad()
+
+        initializeAndJoinChannel()
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        agoraView.exit()
+    }
 }
 ```
 ---
