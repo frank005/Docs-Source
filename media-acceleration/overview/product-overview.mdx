@@ -3,53 +3,54 @@ title: 'Product overview'
 sidebar_position: 1
 type: docs
 description: >
-  Rapidly develop and easily enhance your social, work, education and IoT apps with face-to-face interaction.
+  Helps developers with their own audio/video encoding/decoding modules to perform real-time media communication on embedded devices.
 ---
 
-<ProductOverview
-  title="Interactive Live Streaming"
-  img="/images/product-overview/video-calling.png"
-  quickStartLink="/interactive-live-streaming/get-started/get-started-sdk"
-  uiQuickStartLink="/interactive-live-streaming/get-started/get-started-uikit"
-  apiReferenceLink="/api-reference"
-  samplesLink="#"
-  productFeatures={[
-    {
-      title: "Interactive streaming at scale",
-      content: "Stream high-quality interactive events to millions of participants, and seamlessly promote audience members to speak.",
-      link: ""
-    },
-    {
-      title: "Customizable levels of interactivity",
-      content: "Choose between streaming with Standard low latency (1,500 – 2,000 ms) or with Premium ultra-low latency (400 – 800 ms).",
-      link: ""
-    },
-    {
-      title: "Dual video live streams",
-      content: "Use dual-video streaming to deliver video at both high and low bitrates for large audiences with mixed devices and disparate network conditions.",
-      link: ""
-    },
-    {
-      title: "Cross-channel co-hosting",
-      content: "Share the stream between up to four channels to create competitions or co-host modes among hosts from different channels.",
-      link: ""
-    },
-    {
-      title: "High-quality audio and video",
-      content: "Stream adaptive bitrate HD video and a 48kHz audio sampling rate for full-sound bandwidth capture.",
-      link: ""
-    },
-    {
-      title: "Add-ons and extensions",
-      content: "Add powerful real-time features like whiteboarding, analytics, face filters, content moderation and more.",
-      link: ""
-    },
-  ]}
+Media Acceleration (MA) helps developers who have third-party audio and video codec modules or self-developed codecs implement real-time audio and video stream transmission and intercommunication.
+Based on the real-time transmission of the SD-RTN™ (Software Defined Real-time Network) , MA makes use of global network nodes, intelligent dynamic routing, and end-side poor network countermeasures algorithms to provide video and audio stream transmission cloud services with high connectivity, low latency, and high stability while reducing the impact of network problems such as delay and packet loss on the quality and experience of audio and video transmission.
+In addition, MA adapts to multiple IoT platforms and x86 architectures, helping developers to enable real-time interaction capabilities in any device and scenario.
 
->
+MA provides RTSA Lite SDK for IoT scenarios that require small SDK size, low memory cost, and low power consumption.
 
-Agora’s Interactive Live Streaming allows you to add live video and voice interactive streaming to any online experience. 
+## Functions
 
-Enabled by either Agora’s Video SDK or Voice SDK, Interactive Live Streaming gives you full control over the streaming experience from a standard one-to-many stream to a highly-interactive live event. You can extend the SDK with functionality like analytics and content moderation or explore Extensions Marketplace to quickly activate noise canceling, face filters, and more.
+RTSA Lite SDK supports the following functions:
 
-</ProductOverview>
+| Function                                                         | Description                                                         |
+| :----------------------------------------------------------- | :----------------------------------------------------------- |
+| Two-way Communication between RTSA SDK instances         | Supports audio/video two-way communication between RTSA SDK instances |
+| Two-way Communication between RTSA SDK and RTC Native SDK | RTSA SDK 与 RTC Native SDK 的互通：<li>音频：G722、AAC 和 Opus 编码格式的双向互通。<li>视频：H.264 数据的双向互通。 |
+| Two-way Communication between RTSA SDK and RTC Web SDK | RTSA SDK 与 RTC Web SDK 的互通：<li>音频：Opus 编码格式的双向互通。<li>视频：H.264 编码格式的双向互通。 |
+| Bandwidth estimation                                                 | 支持根据带宽预测算法提出目标码率建议，反馈当前应该提高还是降低码率以及相应的建议值。 |
+| Key frames                                                       | 支持本地关键帧主动请求和远端关键帧请求响应回调。             |
+| 音视频流传输状态管理和监听                                   | 支持灵活开始和暂停发送本地音视频流以及接收远端音视频流。支持监听远端音视频流的传输状态。 |
+
+## Scenarios
+
+RTSA Lite SDK 的极小包体积、低内存占用以及低功耗特性特别适合嵌入式 IoT 领域的各类场景，详见下表：
+
+| Scenario     | Description                                                         |
+| :------- | :----------------------------------------------------------- |
+| 实时监控 | 如智能家用摄像头、车载监控、可视门铃等，集成 RTSA Lite 后，可实现：<li>用户通过手机 App 查看摄像头的视频画面。<li>一个摄像头场景能同时被多个手机查看。<li>一个手机能同时查看多个摄像头场景。<li>手机和摄像头语音双向对讲。 |
+| 电话手表 | 低功耗电话手表端集成 RTSA Lite 后可实现：<li>用户通过手机 App（使用 RTC SDK） 同手表进行实时音视频通话。 |
+
+## Performance metrics
+
+RTSA Lite SDK has the following performance metrics.
+
+| Feature                      | Agora baseline                                                   |
+| :------------------------ | :----------------------------------------------------------- |
+| SDK size |  The app size increases less than 400 KB after integration. <br>When the SDK is sending and receiving 320\*240 H.264 video data at the same time, memory usage is less than 2 MB.  |
+| Connectivity                    | Connectivity is greater than 99%                                                 |
+| Data transmission speed              | A maximum of 50 Mbps for a user in an RTC channel                      |
+| Network adaptability               | Non-aware recovery from 50% packet loss                                      |
+
+## Compatibility
+
+RTSA Lite SDK is compatible with the following platforms:
+
+| Platform      | Versions                                                     |
+| :-------- | :----------------------------------------------------------- |
+| Linux     | <ul><li>x86 / x86_64: gcc 2.6.35 or higher</li><li>ARM:<ul><li>arm-linux-gnueabi 4.4.x or higher</li><li>arm-linux-gnueabihf 4.8.x or higher</li><li>aarch64-linux-gnu 4.8.x or higher</li><li>arm-linux-musleabihf 5.2.x or higher</li><li>arm-linux-musleabi 5.5.x or higher</li><li>aarch64-linux-musl 5.5.x or higher</li><li>arm-linux-uclibceabi 4.4.x or higher</li><li>arm-linux-uclibceabihf 4.8.x or higher</li></ul></li><li>MIPS 架构：mips-linux-uclibceabihf 4.7.x or higher</li></ul> |
+| HarmonyOS | ARM: arm-liteos-eabi liteOS 2.0                    |
+| Android | Android version ≥ 4.1    <br><br> Android SDK supports the following ABIs：<li>armeabi-v7a</li>  <li>arm64-v8a</li> <li>x86</li>  <li>x86-64</li>                |
