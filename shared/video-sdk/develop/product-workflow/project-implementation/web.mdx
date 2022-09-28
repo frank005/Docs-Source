@@ -165,4 +165,48 @@ To implement the <Vpd k="NAME"/> workflow logic in your <Vpl k="CLIENT" />, take
     }
     ```
 
+1. **Manage input devices**
+
+    ```javascript
+    getDevices().then(devices => {
+    console.log("first device id", devices[0].deviceId);
+    }).catch(e => {
+    console.log("get devices error!", e);
+    });
+    ```
+
+    ```javascript
+    // Switch the camera.
+    videoTrack.setDevice("<NEW_DEVICE_ID>").then(() => {
+    console.log("set device success");
+    }).catch(e => {
+    console.log("set device error", e);
+    });
+    ```
+
+    ```javascript
+    AgoraRTC.onMicrophoneChanged = async (changedDevice) => {
+    // When plugging in a device, switch to a device that is newly plugged in.
+    if (changedDevice.state === "ACTIVE") {
+        microphoneTrack.setDevice(changedDevice.device.deviceId);
+    // Switch to an existing device when the current device is unplugged.
+    } else if (changedDevice.device.label === microphoneTrack.getTrackLabel()) {
+        const oldMicrophones = await AgoraRTC.getMicrophones();
+        oldMicrophones[0] && microphoneTrack.setDevice(oldMicrophones[0].deviceId);
+    }
+    }
+
+    AgoraRTC.onCameraChanged = async (changedDevice) => {
+    // When plugging in a device, switch to a device that is newly plugged in.
+    if (changedDevice.state === "ACTIVE") {
+        cameraTrack.setDevice(changedDevice.device.deviceId);
+    // Switch to an existing device when the current device is unplugged.
+    } else if (changedDevice.device.label === cameraTrack.getTrackLabel()) {
+        const oldCameras = await AgoraRTC.getCameras();
+        oldCameras[0] && cameraTrack.setDevice(oldCameras[0].deviceId);
+    }
+    }
+    ```
+
+
 </PlatformWrapper>

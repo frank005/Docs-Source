@@ -24,7 +24,6 @@ The following figure shows the typical workflow you integrate into your <Vpl k="
 ![Product Workflow](/images/video-sdk/product-workflow.svg)
 </PlatformWrapper>
 
-
 This page shows you how to add the following features to your <Vpl k="CLIENT" />:
 
 <PlatformWrapper notAllowed="react-native">
@@ -37,6 +36,16 @@ This page shows you how to add the following features to your <Vpl k="CLIENT" />
     * Running a third party app for online collaboration or troubleshooting.
 
 </PlatformWrapper>
+
+<PlatformWrapper platform="web">
+
+* **Switching media input devices**
+
+    During a call, a user may plug in or switch to a new audio or video input device. The Agora Web SDK provides APIs for managing media devices. Your <Vpl k="CLIENT" /> receives notification of changes in media devices and may respond by switching the input device.
+
+</PlatformWrapper>
+
+
 * **Volume control**
 
     Users in a channel often need to adjust the volume for local and remote audio. For example, they may want to increase the input volume from remote users and decrease the local audio recording volume. You use <Vg k="VSDK" /> to enable <Vpl k="CLIENT" /> users to adjust recording and playback volumes. <Vg k="VSDK" /> also provides methods to mute local audio, audio from a particular remote user, or audio from all remote users. <Vg k="VSDK" /> provides several methods to manage local and remote audio volumes. These methods enable the user to control:
