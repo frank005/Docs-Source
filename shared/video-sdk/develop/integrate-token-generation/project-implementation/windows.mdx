@@ -1,5 +1,30 @@
-import Csharp from './csharp.mdx';
-
 <PlatformWrapper platform="windows">
-<Csharp/>
+### Handle the system logic
+
+To call the token generation methods, you need to add <Vg k="COMPANY" /> token generation code to your project. To perform this, take the following steps:
+
+1.  **Add the Agora IO tools repository**
+
+    1. Clone the [<Vg k="COMPANY" /> IO tools repository](https://github.com/AgoraIO/Tools/tree/master/DynamicKey/AgoraDynamicKey/csharp/src/AgoraIO) to your development device:
+
+        ```sh
+        git clone https://github.com/AgoraIO/Tools
+        ```
+
+    2. Copy the token generator code to your local project:
+
+        ```sh
+        cd Tools\DynamicKey\AgoraDynamicKey\cpp
+        copy src\ <Your project path>\AgoraImplementation
+        ```
+
+1.  **Import Agora token builder library into your project**
+
+    Add the following statement at the beginning of the cpp source file where you wish to generate the <Vg k="COMPANY" /> token:
+
+    ``` csharp
+    using AgoraIO.Media;
+    ```
+
+
 </PlatformWrapper>
