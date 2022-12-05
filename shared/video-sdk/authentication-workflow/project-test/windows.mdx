@@ -1,17 +1,26 @@
 <PlatformWrapper platform="windows">
-3. In _AgoraImplementation.cs_, set `APP_ID` to the value of your app in <Vg k="COMPANY" /> Console.
+3. In _AgoraImplementation.cpp_, set `appId` to the value of your app in <Vg k="COMPANY" /> Console.
 
-4. Set `CHANNEL` and `TOKEN` to empty strings.
+1. Set `channelName` and `token` to empty strings.
 
-5. Update the `serverUrl` in the declarations to the base address of your token server. For example, `\https://agora-token-service-production-92ff.up.railway.app`.
+1. In _AgoraImplementation.cpp_, update the `serverUrl` in the declarations to the base address of your token server. For example, `agora-token-service-production-92ff.up.railway.app`.
+   
+    Make sure you remove `https://` from the server URL string.
 
-6. Run your <Vpl k="CLIENT" /> `Play`. You see the <Vpl k="CLIENT" /> running on your device.
+1. In Visual Studio, click **Local Windows Debugger**. A moment later you see the project running on your development device.
 
-7. Select a role using the toggle buttons.
+    If this is the first time you run the project, you need to grant microphone and camera access to your <Vpl k="CLIENT"/>.
 
-8. Set *Channel name* to the name you used in the <Link to="{{Global.DEMO_BASIC_VIDEO_CALL_URL}}"><Vg k="COMPANY" /> web demo</Link>.
+1. Set *Channel name* to the name you used in the <Link to="{{Global.DEMO_BASIC_VIDEO_CALL_URL}}"><Vg k="COMPANY" /> web demo</Link>.
 
-9. To connect to a channel, click **Join**.
+<ProductWrapper product="interactive-live-streaming">
+8. Select an option and click **Join** to start a session.
+    - When you join as a **Host**, the local video is published and played in the <Vpl k="CLIENT"/>.
+    - When you join as **Audience**, the remote stream is subscribed and played.
+</ProductWrapper>
 
+<ProductWrapper product="video-calling">
+8. Click **Join** to start a call.
+</ProductWrapper>
 
 </PlatformWrapper>

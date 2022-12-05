@@ -1,7 +1,202 @@
-import Csharp from './csharp.mdx';
 
 <PlatformWrapper platform="windows">
 
-<Csharp />
+1.  **Enable the user to specify a channel name**
+
+    To add a text box to the user interface, take the following steps:
+
+    1. Go to menu **View** > **Other Windows** > **Resource View**.
+    
+        If the **Resource View** window isn't the top-most window, select the **Resource View** tab to bring it to the top.
+    
+    1. In **Resource View**, go to **AgoraImplementation.rc** > **Dialog** and double-click `IDD_AGORAIMPLEMENTATION_DIALOG`.
+    
+        The resource opens inside the **Dialog Editor**. 
+    
+    1. Click **View** > **ToolBox**. The **Toolbox** opens.
+    
+    1. From **ToolBox**, drag **Edit Control** to the surface of the **Dialog Editor**
+   
+        You see an edit box on the dialog you opened in the dialog editor.
+
+5.  **Add variables for your connection to the token server**
+
+    Declare the variables you need to specify the token role, token server URL and the token expire time. In `AgoraImplementationDlg.h`, add the following declarations to `CAgoraImplementationDlg` after `CWnd remoteView;`:
+
+    ``` cpp
+    int tokenRole; // The token role: Broadcaster or Audience
+    std::string serverUrl = "<Token Server URL>"; // The base URL to your token server, for example, "https://agora-token-service-production-92ff.up.railway.app".
+    int tokenExpireTime = 40; // Expire time in Seconds.
+    CEdit editChannelName; // To read the channel name from the UI.
+    ```
+
+    Make sure you specify the token server URL in exactly the same format as shown in the example.
+
+6.  **Set up access to the channel name text box from code**
+
+    In `AgoraImplementationDlg.cpp`, add the following line at the end of the `OnInitDialog` method before `return TRUE;`:
+
+    ``` cpp
+    textBox = (CEdit*)GetDlgItem(IDC_EDIT1);
+    textBox->SetCueBanner(L"Channel Name");
+    textBox->MoveWindow(790, 830, 250, 50, TRUE);
+    ```
+
+7.  **Retrieve a token from the server**
+
+    Use `CHttpConnection` to retrieve an authentication token for a specific channel from the token server, then decode the return parameters. To implement this logic, take the following steps:
+
+    1. In `AgoraImplementationDlg.h`, add the following method to `CAgoraImplementationDlg`:
+
+        ```cpp
+        void fetchToken();
+        ```
+
+    2. Implement the logic to fetch a token from the server. In `AgoraImplementationDlg.cpp`, add the following before `OnInitDialog`:
+
+        ```cpp
+        void CAgoraImplementationDlg::fetchToken()
+        {
+            BOOL bResult = FALSE;
+            CInternetSession session;
+            CHttpConnection* pConnection = NULL;
+            try
+            {
+                pConnection = (CHttpConnection*)session.GetHttpConnection(_T("agora-token-service-production-1566.up.railway.app"), (INTERNET_PORT)INTERNET_DEFAULT_HTTP_PORT);
+                if (pConnection)
+                {
+                    CString channel;
+                    textBox->GetWindowTextW(channel);
+                    if (channel == L"")
+                    {
+                        AfxMessageBox(L"Input the channel name that you wish to join");
+                        return;
+                    }
+                    CHttpFile* pHTTPFile = NULL;
+                    CString s1 = L"/rtc/";
+                    CString s2, s3;
+                    s1 += channel;
+                    s1 += s2;
+			        s1 += L"/0/uid/1/?expiry=";
+                    s3.Format(_T("%d"), ExpireTime);
+                    s1 += s3;
+                    pHTTPFile = pConnection->OpenRequest(CHttpConnection::HTTP_VERB_GET, s1);
+                    if (pHTTPFile)
+                    {
+                        bResult = pHTTPFile->SendRequest(NULL, NULL, 0);
+                        if (bResult)
+                        {
+                            CString strResponse;
+                            char* pszBuff = new char[1025];
+                            int nRead = 0;
+                            while ((nRead = pHTTPFile->Read(pszBuff, 1024)) > 0)
+                            {
+                                pszBuff[nRead] = 0;
+                                strResponse += pszBuff;
+                            };
+                            for (int i = 13; i < (strResponse.GetLength()-2); i++)
+                            {
+                                accessToken += strResponse[i];
+                            }
+                            delete[] pszBuff;
+                        }
+                        pHTTPFile->Close();
+                        delete pHTTPFile;
+                    }
+                    pConnection->Close();
+                    delete pConnection;
+                }
+                catch (CInternetException* pEx)
+                {
+                    CString msg;
+                    TCHAR cause[5120];
+                    pEx->GetErrorMessage(cause, 5120);
+                    msg += cause;
+                    AfxMessageBox(msg);
+                    pConnection = NULL;
+                    pEx->Delete();
+                }
+            session.Close();
+        }
+        ```
+
+8.  **Join a channel using the token**
+
+    When your <Vpl k = "CLIENT"/> fetches a token form the token server, it calls `joinChannel` or `renewToken` based on the current status of the channel. When you initially join a channel, you call `joinChannel`. When you replace the expired token, you call `renewToken`. To implement this logic, take the following steps:
+    
+    1. In `AgoraImplementationDlg.cpp`, locate `fetchToken` and add the following before `delete[] pszBuff;`:
+
+        ```cpp
+        if (isJoin == FALSE)
+	    {
+            agoraEngine->joinChannel((char*)(LPCTSTR)accessToken, channelName.c_str(), 0, NULL);
+            isJoin = true;
+            AfxMessageBox(accessToken);
+        }
+        else
+        { 
+            // Convert a TCHAR string to a LPCSTR
+            CT2CA pszConvertedAnsiString(accessToken);
+            // Construct a std::string using the LPCSTR input
+            std::string temp(pszConvertedAnsiString);
+            token = temp;
+            agoraEngine->renewToken(token.c_str());
+        }
+        ```
+
+    2. In `AgoraImplementationDlg.cpp`, locate `OnBnClickedButton1` and remove the following:
+
+        ```cpp
+        if (0 == agoraEngine->joinChannel(token.c_str(), channelName.c_str(), 0, NULL))
+        { 
+            isJoin = true;
+        }
+        ```
+
+9.  **Handle the event triggered by <Vg k="AGORA_BACKEND" /> when the token is about to expire**
+
+    A token expires after the `expireTime` specified in the call to the token server or expires after 24 hours, if the time is not specified. The `onTokenPrivilegeWillExpire` event is triggered when your authentication token is about to expire. Your <Vpl k = "CLIENT"/> catches `onTokenPrivilegeWillExpire` and calls `OnEIDTokenExpired` so that a fresh token may be retrieved and used. To implement this workflow, take the following steps:
+
+    1. Setup the `onTokenPrivilegeWillExpire` callback. In `AgoraImplementationDlg.h`, add the following to `AgoraEventHandler`:
+       
+        ```cpp
+        virtual void onTokenPrivilegeWillExpire(const char* token) override;
+        ```
+
+    1. Setup the `OnEIDTokenExpired` method to call `fetchToken`. In `AgoraImplementationDlg.h`, add the following method declaration to `CAgoraImplementationDlg` before `	void fetchToken();`:
+
+        ```cpp
+        afx_msg LRESULT OnEIDTokenExpired(WPARAM token, LPARAM lParam);
+        ```
+
+    1. In `AgoraImplementationDlg.cpp`, add the following before `OnInitDialog`:
+
+        ```cpp
+        void AgoraEventHandler::onTokenPrivilegeWillExpire(const char* token)
+        {
+            // Send a notification to CAgoraImplementationDlg class to call OnEIDTokenExpired.
+            if (m_hMsgHandler)
+            {
+                ::PostMessage(m_hMsgHandler, WM_MSGID(EID_TOKEN_EXPIRED), (WPARAM)token, (LPARAM)NULL);
+            }
+        }
+        ```
+
+    1. In `AgoraImplementationDlg.cpp`, add the following before `OnInitDialog`:
+
+        ```cpp
+        LRESULT CAgoraImplementationDlg::OnEIDTokenExpired(WPARAM expiredToken, LPARAM lParam)
+        {
+            fetchToken();
+            // Notify the parent window
+            ::PostMessage(GetParent()->GetSafeHwnd(), WM_MSGID(EID_TOKEN_EXPIRED), TRUE, 0);
+            return 0;
+        }
+        ```  
+    1. In `AgoraImplementationDlg.cpp`, add the following after `ON_WM_QUERYDRAGICON()`:
+
+        ```cpp
+        ON_MESSAGE(WM_MSGID(EID_TOKEN_EXPIRED), &CAgoraImplementationDlg::OnEIDTokenExpired)
+        ```
 
 </PlatformWrapper>
