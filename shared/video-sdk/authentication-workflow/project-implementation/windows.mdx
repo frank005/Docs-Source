@@ -19,7 +19,7 @@
    
         You see an edit box on the dialog you opened in the dialog editor.
 
-5.  **Add variables for your connection to the token server**
+2.  **Add variables for your connection to the token server**
 
     Declare the variables you need to specify the token role, token server URL and the token expire time. In `AgoraImplementationDlg.h`, add the following declarations to `CAgoraImplementationDlg` after `CWnd remoteView;`:
 
@@ -32,7 +32,7 @@
 
     Make sure you specify the token server URL in exactly the same format as shown in the example.
 
-6.  **Set up access to the channel name text box from code**
+3.  **Set up access to the channel name text box from code**
 
     In `AgoraImplementationDlg.cpp`, add the following line at the end of the `OnInitDialog` method before `return TRUE;`:
 
@@ -42,7 +42,7 @@
     textBox->MoveWindow(790, 830, 250, 50, TRUE);
     ```
 
-7.  **Retrieve a token from the server**
+4.  **Retrieve a token from the server**
 
     Use `CHttpConnection` to retrieve an authentication token for a specific channel from the token server, then decode the return parameters. To implement this logic, take the following steps:
 
@@ -120,7 +120,7 @@
         }
         ```
 
-8.  **Join a channel using the token**
+5.  **Join a channel using the token**
 
     When your <Vpl k = "CLIENT"/> fetches a token form the token server, it calls `joinChannel` or `renewToken` based on the current status of the channel. When you initially join a channel, you call `joinChannel`. When you replace the expired token, you call `renewToken`. To implement this logic, take the following steps:
     
@@ -153,7 +153,7 @@
         }
         ```
 
-9.  **Handle the event triggered by <Vg k="AGORA_BACKEND" /> when the token is about to expire**
+6.  **Handle the event triggered by <Vg k="AGORA_BACKEND" /> when the token is about to expire**
 
     A token expires after the `expireTime` specified in the call to the token server or expires after 24 hours, if the time is not specified. The `onTokenPrivilegeWillExpire` event is triggered when your authentication token is about to expire. Your <Vpl k = "CLIENT"/> catches `onTokenPrivilegeWillExpire` and calls `OnEIDTokenExpired` so that a fresh token may be retrieved and used. To implement this workflow, take the following steps:
 
