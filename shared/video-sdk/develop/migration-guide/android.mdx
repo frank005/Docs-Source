@@ -1,47 +1,33 @@
 <PlatformWrapper platform="android">
 
-Agora <Vpd k="SDK" /> v<Vg k="VSDK_LATEST_4_0_0" /> is a new version of the SDK that you can use to embed real-time video and audio into your <Vpl k="CLIENT" />. It supports large-scale real-time interactive activities and provides better real-time interactive effects. For details, see [Benefits and features](../overview/product-overview).
+Agora <Vpd k="SDK" /> v<Vg k="VSDK_LATEST_4_0_0" /> is an improved and updated version of the 3.x SDK that enables you to benefit from the latest developments at Agora in providing  large-scale, real-time interactive activities and better real-time interactive effects. For details, see [Benefits and features](../overview/product-overview).
 
-By upgrading to the new version, you can take advantage of the latest features while improving the stability of your <Vpl k="CLIENT" />. This page provides a step-by-step guide that you can follow to upgrade your projects from SDK v3.x (v3.7.0 and earlier) to v4.0.0.
+By upgrading to the new version, you can implement the latest features while improving the stability of your <Vpl k="CLIENT" />. This page provides a step-by-step guide that you can follow to upgrade your projects from SDK v<Vg k="VSDK_PREVIOUS_RELEASE" /> to <Vg k="VSDK_RELEASE" />.
 
--  [Migration steps](#migration-steps) to upgrade your  <Vpl k="CLIENT" /> to <Vpd k="NAME"/> v<Vg k="VSDK_RELEASE" />.
-
-- [What's changed](#what-has-changed) between  <Vpd k="NAME"/> v<Vg k="VSDK_PREVIOUS_RELEASE" /> and v<Vg k="VSDK_RELEASE" />.
-
-
-## Migrate to <Vpd k="SDK" /> v4.0.0 
-
-This section introduces the main steps to upgrade the SDK from v<Vg k="VSDK_PREVIOUS_RELEASE" /> to <Vg k="VSDK_RELEASE" />.
-
-1.  Integrate the SDK
-
-    See [Get started](../get-started/get-started-sdk) for more information about integrating the <Vg k="VSDK_RELEASE" /> SDK into your project.
-
-2.  Rename imported classes
-
-    After successfully integrating the SDK, you need to update the codes of imported classes from the `io.agora.rtc` prefix to the `io.agora.rtc2` prefix in the `/app/java/com.example.<projectname>/MainActivity` file of your project.
-
-    The file path of `ChannelMediaOptions.java` in the <Vg k="VSDK_RELEASE" /> SDK is also changed from `/models` to the root directory.
-
-3.  Update the Agora code in your app
-
-    The <Vg k="VSDK_RELEASE" /> SDK has optimized or modified the implementation of some functions, resulting in incompatibility with the v<Vg k="VSDK_PREVIOUS_RELEASE" /> SDK. In order to retain Agora functionality in your app, update the code in your app according to [What has changed](#what-has-changed).
-
-## What has changed
 
 This section introduces the main changes of <Vg k="VSDK_RELEASE" /> compared to v<Vg k="VSDK_PREVIOUS_RELEASE" /> in the following categories. You need to update the code of your app according to your business scenario.
 
--   [Breaking changes](#breaking-changes): Introduces API compatibility changes that have a big impact. You need to spend significant time modifying the related implementation.
+## 1. Integrate the SDK
 
--   [Behavior changes](#behavior-changes): Introduces changes caused by reasonable optimization of the SDK default behavior and API behavior. Less time is required to modify the related implementation, if any.
+See [Get started](../get-started/get-started-sdk) for more information about integrating the <Vg k="VSDK_RELEASE" /> SDK into your project.
 
--   [Function gaps](#function-gaps): Introduces functions that were supported in v<Vg k="VSDK_PREVIOUS_RELEASE" /> but are not supported in <Vg k="VSDK_RELEASE" />. However, these functions are intended to be added in a future release.
+##  Rename imported classes
 
--   [Removed APIs](#removed-apis): Introduces APIs that were supported in v<Vg k="VSDK_PREVIOUS_RELEASE" /> but removed in <Vg k="VSDK_RELEASE" />. Most of these APIs have alternatives in <Vg k="VSDK_RELEASE" />. Modifying the related implementation should require less time.
+After successfully integrating the SDK, you need to update the codes of imported classes from the `io.agora.rtc` prefix to the `io.agora.rtc2` prefix in the `/app/java/com.example.<projectname>/MainActivity` file of your project.
 
--   [Naming and data type changes](#naming-and-data-type-changes): Introduces the naming and data type changes of the main APIs. You can update the relevant implementation according to the error message in the IDE, which is expected to take less time.
+The file path of `ChannelMediaOptions.java` in the <Vg k="VSDK_RELEASE" /> SDK is also changed from `/models` to the root directory.
+
+##  Update the code in your app
+
+The <Vg k="VSDK_RELEASE" /> SDK has optimized or modified the implementation of some functions, resulting in incompatibility with the v<Vg k="VSDK_PREVIOUS_RELEASE" /> SDK. In order to retain Agora functionality in your app, update the code in your app.
+
 
 ### Breaking changes
+
+API changes listed in this section are , may cause your 3.x code to fail either at compile-time or at run-time. To maintain the same behavior, you need to make changes to your code. 
+
+-   [Breaking changes](#breaking-changes): Introduces API compatibility changes that have a big impact. You need to spend significant time modifying the related implementation.
+
 
 After upgrading from v<Vg k="VSDK_PREVIOUS_RELEASE" /> to <Vg k="VSDK_RELEASE" />, the way the APIs implement some functions is different. This section introduces compatibility changes for these APIs and the logic for updating the code of your app.
 
@@ -137,6 +123,8 @@ As a consequence, <Vg k="VSDK_RELEASE" /> removes the `onError` and `onWarning` 
 
 ### Behavior changes
 
+-   [Behavior changes](#behavior-changes): Introduces changes caused by reasonable optimization of the SDK default behavior and API behavior. Less time is required to modify the related implementation, if any.
+
 This section introduces changes caused by reasonable optimization of the SDK default behavior and API behavior.
 
 #### Channel profile
@@ -160,6 +148,8 @@ In v<Vg k="VSDK_PREVIOUS_RELEASE" />, you need to call `switchChannel` to quickl
 In <Vg k="VSDK_RELEASE" />, you can achieve the same switching speed as `switchChannel` in v<Vg k="VSDK_PREVIOUS_RELEASE" /> by switching a channel through `leaveChannel` and `joinChannel`. Therefore, <Vg k="VSDK_RELEASE" /> removes `switchChannel`. If you call `switchChannel` to quickly switch a channel in v<Vg k="VSDK_PREVIOUS_RELEASE" />, see the <Link to="{{GLOBAL.AGORA_API_EXAMPLES_ANDROID_TREE}}/advanced/VideoQuickSwitch.java">VideoQuickSwitch</Link> sample project to update the code in your app.
 
 ### Function gaps
+
+-   [Function gaps](#function-gaps): Introduces functions that were supported in v<Vg k="VSDK_PREVIOUS_RELEASE" /> but are not supported in <Vg k="VSDK_RELEASE" />. However, these functions are intended to be added in a future release.
 
 This section introduces functions that were supported in v<Vg k="VSDK_PREVIOUS_RELEASE" /> but are no longer supported or behave inconsistently in <Vg k="VSDK_RELEASE" />. Plans exist to support them or make them consistent in a future release, however.
 
@@ -357,6 +347,9 @@ External audio data:
 
 The <Vg k="VSDK_RELEASE" /> removes deprecated or unrecommended APIs. Alternatives to the removed API or reasons for their removal are shown as follows:
 
+-   [Removed APIs](#removed-apis): Introduces APIs that were supported in v<Vg k="VSDK_PREVIOUS_RELEASE" /> but removed in <Vg k="VSDK_RELEASE" />. Most of these APIs have alternatives in <Vg k="VSDK_RELEASE" />. Modifying the related implementation should require less time.
+
+
 -   `setVideoDenoiserOptions`, `setLowlightEnhanceOptions`, and `setColorEnhanceOptions`: Use `setExtensionProperty` instead.
 
 -   `onvirtualBackgroundSourceEnabled`: Use the return value of `enableVirtualBackground` instead.
@@ -416,6 +409,8 @@ The <Vg k="VSDK_RELEASE" /> removes deprecated or unrecommended APIs. Alternativ
 ### Naming and data type changes
 
 The naming and data type changes in <Vg k="VSDK_RELEASE" /> cause error messages in the IDE when you compile your project, and you need to update the code of your app according to each error message.
+
+-   [Naming and data type changes](#naming-and-data-type-changes): Introduces the naming and data type changes of the main APIs. You can update the relevant implementation according to the error message in the IDE, which is expected to take less time.
 
 #### Naming changes
 
