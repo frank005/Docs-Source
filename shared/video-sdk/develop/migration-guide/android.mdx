@@ -7,11 +7,15 @@ By upgrading to the new version, you can implement the latest features while imp
 
 This section introduces the main changes of <Vg k="VSDK_RELEASE" /> compared to v<Vg k="VSDK_PREVIOUS_RELEASE" /> in the following categories. You need to update the code of your app according to your business scenario.
 
-## 1. Integrate the SDK
+## 1. Replace the SDK reference in your project
 
-See [Get started](../get-started/get-started-sdk) for more information about integrating the <Vg k="VSDK_RELEASE" /> SDK into your project.
+To use the new SDK, you update the SDK reference in project dependencies. To do this:
 
-##  Rename imported classes
+1. Open the `/Gradle Scripts/build.gradle (Module: <project name>.app)` file in your <Vpl k="NAME" /> project and remove the reference to the 3.x <Vpl k="SDK"/> under `dependencies`.
+
+2. See the Project setup section in the [SDK Quickstart](../get-started/get-started-sdk#project-setup) for more information about integrating the <Vg k="VSDK_RELEASE" /> SDK into your project.
+
+##  2. Rename imported classes
 
 After successfully integrating the SDK, you need to update the codes of imported classes from the `io.agora.rtc` prefix to the `io.agora.rtc2` prefix in the `/app/java/com.example.<projectname>/MainActivity` file of your project.
 
