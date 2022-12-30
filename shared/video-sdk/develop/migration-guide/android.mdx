@@ -12,7 +12,7 @@ This page provides a step-by-step guide that you can follow to upgrade your proj
 
     1. Open the `/Gradle Scripts/build.gradle (Module: <project name>.app)` file in your <Vpl k="NAME" /> project and remove the reference to the <Vg k="VSDK_PREVIOUS_RELEASE" /> <Vpd k="SDK"/> under `dependencies`.
 
-    2.  Integrate the <Vpd k="SDK" /> into your Android project. To do this:
+    2.  Integrate the <Vg k="VSDK_RELEASE" /> <Vpd k="SDK" /> into your Android project. To do this:
 
         1.  In `/Gradle Scripts/build.gradle (Module: <project name>.app)`, add the following line under `dependencies`:
 
@@ -24,19 +24,19 @@ This page provides a step-by-step guide that you can follow to upgrade your proj
         }
         ```
 
-        2.  Replace `<artifact id>` and `<version>` with appropriate values for the latest release. For example, `io.agora.rtc:full-sdk:4.0.1`.
+        2.  Replace `<artifact id>` and `<version>` with appropriate values for the latest <Vpd k="SDK" /> release. For example, `io.agora.rtc:full-sdk:4.0.1`.
 
             You can obtain the latest `<artifact id>` and `<version>` information using [Maven Central Repository Search](https://search.maven.org/search?q=io.agora.rtc).
 
 2. **Rename imported classes**
 
-    After successfully integrating the SDK, you need to update the names of imported classes from the `io.agora.rtc` prefix to the `io.agora.rtc2` prefix in the `/app/java/com.example.<projectname>/MainActivity` file of your project.
+    After successfully integrating the SDK, update the names of imported classes from the `io.agora.rtc` prefix to the `io.agora.rtc2` prefix in the `/app/java/com.example.<projectname>/MainActivity` file of your project.
 
     The file path of `ChannelMediaOptions.java` in the <Vg k="VSDK_RELEASE" /> SDK is also changed from `/models` to the root directory.
 
 3. **Update the code in your app**
 
-    The <Vg k="VSDK_RELEASE" /> SDK has optimized or modified the implementation of some functions, resulting in incompatibility with the v<Vg k="VSDK_PREVIOUS_RELEASE" /> SDK. In order to retain Agora functionality in your app, update the code in your app as follows:
+    The <Vg k="VSDK_RELEASE" /> SDK optimizes or modifies implementation of some functions, resulting in incompatibility with the v<Vg k="VSDK_PREVIOUS_RELEASE" /> SDK. In order to retain the desired Agora functionality, update the code in your app according to the different types of API changes as follows:
 
         1. **Breaking changes** in the API cause your <Vg k="VSDK_PREVIOUS_RELEASE" /> code to fail at compile-time or at run-time. To maintain the same behavior, make the necessary changes to your code. Browse through the list of [Breaking changes](#breaking-changes) to identify functions that you use in your code. Then use the change description on this page, read the relevant document in the side bar, or refer to the API reference to update your code.
 
