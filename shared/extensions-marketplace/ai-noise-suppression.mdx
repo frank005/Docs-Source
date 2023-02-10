@@ -42,8 +42,12 @@ To use the <Vg k="RTEE_NS" /> extension, you must meet the following requirement
 This section explains how to use the latest version of the <Vg k="RTEE_NS" /> extension. Implementation for previous versions might be different. For details, see the [release notes](/extensions-marketplace/reference/release-notes#ai-noise-suppression).
 
 <PlatformWrapper notAllowed="web">
-1. To activate <Vg k="RTEE_NS" /> in your <Vpl k="CLIENT" /> contact support@agora.io.
+1. **Activate <Vg k="RTEE_NS" /> in your <Vpl k="CLIENT" />**
+
+    Contact support@agora.io and request that this feature is activated for your project.
 </PlatformWrapper>
+
+<ProjectImplement />
 
 <PlatformWrapper platform="ios">
 When <Vg k="RTEE_NS" /> is enabled, if <Vg k="VSDK" /> detects that the device performance is not sufficient, it:
@@ -51,10 +55,6 @@ When <Vg k="RTEE_NS" /> is enabled, if <Vg k="VSDK" /> detects that the device p
 - Disables <Vg k="RTEE_NS" />
 - Enables traditional noise reduction
 - Throws the -1054(WARN_APM_AINS_CLOSED) error code.
-</PlatformWrapper>
-
-<PlatformWrapper platform="web">
-<ProjectImplement />
 </PlatformWrapper>
 
 ## Reference
