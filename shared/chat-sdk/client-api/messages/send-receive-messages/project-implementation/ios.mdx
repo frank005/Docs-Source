@@ -20,6 +20,19 @@ message.chatType = AgoraChatTypeGroupChat;
                                              completion:nil];
 ```
 
+### Set message priority
+
+For chat room messages, Agora Chat provides three message priorities: High, normal, and low. High-priority messages are delivered first. You can assign a high priority to a certain type of messages in a chat room or to a specified member to ensure that these messages are delivered first. This method ensures that when messages are sent concurrently in large quantities or at a high rate, the important ones can be delivered first, thereby increasing the reliability of their delivery. When the load on the server is high, low-priority messages are discarded first to reserve resources for high-priority messages. However, the message priority function only ensures that high-priority messages arrive first. It does not guarantee their arrival, because even high-priority messages are still dropped when the server load is too high.
+
+```objective-c
+AgoraChatTextMessageBody* textBody = [[AgoraChatTextMessageBody alloc] initWithText:@"Hi"];
+    AgoraChatMessage* message = [[AgoraChatMessage alloc] initWithConversationID:@"roomId" body:textBody ext:nil];
+    message.chatType = AgoraChatTypeChatRoom;
+    // Set the message priority. The default value is `Normal`, indicating the normal priority.
+    message.priority = AgoraChatRoomMessagePriorityHigh;
+[AgoraChatClient.sharedClient.chatManager sendMessage:message progress:nil completion:nil];
+```
+
 ### Receive a message
 
 You can use `AgoraChatManagerDelegate` to listen for message events. You can add multiple delegates to listen for multiple events. When you no longer listen for an event, ensure that you remove the listener.

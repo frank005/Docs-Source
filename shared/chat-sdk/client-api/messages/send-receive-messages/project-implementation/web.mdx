@@ -28,6 +28,30 @@ function sendTextMessage() {
 }
 ```
 
+### Set message priority
+
+For chat room messages, Agora Chat provides three message priorities: High, normal, and low. High-priority messages are delivered first. You can assign a high priority to a certain type of messages in a chat room or to a specified member to ensure that these messages are delivered first. This method ensures that when messages are sent concurrently in large quantities or at a high rate, the important ones can be delivered first, thereby increasing the reliability of their delivery. When the load on the server is high, low-priority messages are discarded first to reserve resources for high-priority messages. However, the message priority function only ensures that high-priority messages arrive first. It does not guarantee their arrival, because even high-priority messages are still dropped when the server load is too high.
+
+```javascript
+// Send a text message.
+function sendTextMessage() {
+    let option = {
+        type: "txt",
+        msg: "message content",
+        // Set the message priority. The default value is `Normal`, indicating the normal priority.
+        priority: "high"
+        to: "chat room ID",
+        chatType: "chatRoom",
+    };
+    let msg = WebIM.message.create(opt);
+    conn.send(msg).then(()=>{
+        console.log("Send message success");
+    }).catch((e)=>{
+        console.log("Send message fail");
+    });
+}
+```
+
 ### Receive a message
 
 You can use `addEventHandler` to listen for message events. You can add multiple events. When you no longer listen for an event, ensure that you remove the handler.

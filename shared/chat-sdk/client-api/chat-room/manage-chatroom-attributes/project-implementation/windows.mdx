@@ -2,11 +2,20 @@
 
 ### Manage basic chat room attributes
 
-#### Retrieve basic chat room attributes
+All chat room members can call `FetchRoomInfoFromServer` to retrieve the detailed information of the current chat room, including the subject, announcement, description, member type, and admin list. 
 
-All chat room members can call `FetchRoomInfoFromServer` to retrieve the detailed information of the current chat room, including the subject, announcement, description, member type, and admin list.
+```c#
+// The chat room members can call FetchRoomInfoFromServer to get the information of the specified chat room.
+SDKClient.Instance.RoomManager.FetchRoomInfoFromServer(roomId, new ValueCallBack<Room>(
+    onSuccess: (room) => {
+    },
+    onError: (code, desc) => {
+    }
+));
+```
 
-The following code sample shows how to retrieve the chat room announcements:
+#### Change chat room subject or description
+Only the chat room owner and admin can set and update the chat room subject and description.
 
 ```csharp
 // The chat room members can call FetchRoomInfoFromServer to get the information of the specified chat room.
@@ -42,9 +51,7 @@ SDKClient.Instance.RoomManager.ChangeRoomDescription(roomId, newDesc, new CallBa
 
 All chat room members can retrieve the chat room announcement. Only the chat room owner and admin can set and update the announcement. Once the announcement is updated, all the other chat room members receive the `OnAnnouncementChangedFromRoom` callback.
 
-The following code sample shows how to update the chat room announcements:
-
-```csharp
+```c#
 // Chat room members can call FetchRoomAnnouncement to retrieve the chat room announcement.
 SDKClient.Instance.RoomManager.FetchRoomAnnouncement(roomId, new ValueCallBack<string>(
     onSuccess: (announcement) => {
@@ -52,12 +59,13 @@ SDKClient.Instance.RoomManager.FetchRoomAnnouncement(roomId, new ValueCallBack<s
     onError: (code, desc) => {
     }
 ));
+
 // The chat room owner and admin can call UpdateRoomAnnouncement to set or update the chat room announcement.
 SDKClient.Instance.RoomManager.UpdateRoomAnnouncement(roomId, announcement, new CallBack(
-  onSuccess: () => {
-  },
-  onError: (code, desc) => {
-  }
+    onSuccess: () => {
+    },
+    onError: (code, desc) => {
+    }
 ));
 ```
 
@@ -67,9 +75,7 @@ SDKClient.Instance.RoomManager.UpdateRoomAnnouncement(roomId, announcement, new 
 
 All chat room members can call `FetchAttributes` to retrieve the specified or all custom attributes of the chat room.
 
-The following code sample shows how to update the chat room name:
-
-```csharp
+```c#
 // Retrieves certain or all custom attributes by specifying chat room ID and attribute keys.  
 SDKClient.Instance.RoomManager.FetchAttributes(roomId, keys, new ValueCallBack<Dictionary<string, string>>(
     onSuccess: (Dictionary<string, string> dict) => {
@@ -81,7 +87,7 @@ SDKClient.Instance.RoomManager.FetchAttributes(roomId, keys, new ValueCallBack<D
 
 #### Set one or more custom attributes
 
-All chat room members can call `AddAttributes` to set one or more custom attributes. Use this method to add new custom attributes or update existing attributes that are set by yourself and others. After you successfully call this method, other members in the chat room receive an `OnChatroomAttributesChanged` callback.
+All chat room members can call `AddAttributes` to set one or more custom attributes. Use this method to add new custom attributes or update existing attributes that you have set yourself and others. After you successfully call this method, other members in the chat room receive an `OnChatroomAttributesChanged` callback.
 
 ```c#
 // Sets custom attributes by specifying the chat room ID and key-value maps of the attributes. 
@@ -103,7 +109,7 @@ SDKClient.Instance.RoomManager.AddAttributes(roomId, kv, deleteWhenExit, forced,
 
 #### Remove one or more custom attributes
 
-Chat room members can call `RemoveAttributes` to remove one or more custom attributes that are set by themselves and others. After you successfully call this method, other members in the chat room receive an `OnChatroomAttributesRemoved` callback.
+Chat room members can call `RemoveAttributes` to remove one or more custom attributes that they have set themselves and others. After you successfully call this method, other members in the chat room receive an `OnChatroomAttributesRemoved` callback. 
 
 The following code sample shows how to update the chat room description:
 
@@ -119,8 +125,7 @@ SDKClient.Instance.RoomManager.RemoveAttributes(roomId, keys, forced, new CallBa
         {
             // Certain custom attributes are not removed successfully. 
         }
-   
- },
+    },
     onError: (code, desc) => {
     }
 ));
