@@ -3,7 +3,7 @@ title: "Enable and disable the whiteboard"
 sidebar_position: 5
 type: docs
 description: >
-
+  Disable and enable Whiteboard functionality in your classroom.
 ---
 
 
@@ -11,15 +11,18 @@ import DisableWhiteboardModule from '@docs/shared/flexible-classroom/disable-whi
 
 export const toc = [{}];
 
+By default, the whiteboard is enabled in  <Vg k="FC"/>. When you disable the whiteboard modules, drawing tools
+including pencils, text boxes, shapes, and erasers are no longer be available. Also, users cannot display files on
+the whiteboard. Other features such as uploading or deleting class files, pop-up quiz, count-down timer, and screen
+sharing are not affected.
 
-The whiteboard module in Flexible Classroom is implemented based on AgoraWidget. You can turn the whiteboard module on or off in the classroom by setting the widget state as active or inactive.
-
-After disabling the whiteboard module, the drawing tools, including pencils, text boxes, shapes, and erasers will no longer be available. Users can neither display class files on the whiteboard. Other features, such as uploading or deleting class files, pop-up quiz, count-down timer, and screen sharing will not be affected.
 
 <DisableWhiteboardModule />
 
-
 ## Reference
+
+<PlatformWrapper notAllowed="electron">
+<PlatformWrapper notAllowed="web">
 
 ### AgoraWidgetContext
 
@@ -171,3 +174,52 @@ Occurs when the widget state changes to inactive.
 Parameter:
 
 - widgetId: The widget ID.
+
+</PlatformWrapper>
+</PlatformWrapper>
+
+<PlatformWrapper platform="web">
+Whiteboard related interfaces:
+
+```tsx
+/**
+   * whether the board is connected to server
+   */
+  @computed
+  get connected() {
+    return this.connState === BoardConnectionState.Connected;
+  }
+
+  /**
+   * whether the board is mounted in client
+   */
+  @computed
+  get mounted() {
+    return this.mountState === BoardMountState.Mounted;
+  }
+
+  /**
+   * whether the current user is granted to operate on the board
+   */
+  @computed
+  get granted() {
+    return this.hasPrivilege();
+  }
+
+  /**
+   * connect and show the board
+   */
+  enable() {
+    this._sendBoardCommandMessage(AgoraExtensionRoomEvent.ToggleBoard, true);
+  }
+
+  /**
+   * disconnect and hide the board
+   */
+  disable() {
+    this._sendBoardCommandMessage(AgoraExtensionRoomEvent.ToggleBoard, false);
+  }
+
+```
+
+</PlatformWrapper>
