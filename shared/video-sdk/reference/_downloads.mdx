@@ -1,5 +1,6 @@
 import * as data from '@site/data/variables';
 
+## Manual install
 <PlatformWrapper platform="web">
 
 To manually install <Vpd k="SDK" />:
@@ -74,7 +75,7 @@ To manually install <Vpd k="SDK" />:
 
     1. Extract the files from [the iOS download](../../sdks) to a local folder, `<unzipped_package>`.
 
-    2.  From the libs folder of the downloaded SDK package, copy the files or subfolders you need to the root of your project folder.
+    2.  From the libs folder of the downloaded SDK package, copy the files or sub folders you need to the root of your project folder.
 
     3. In Xcode, [link your target to the frameworks or libraries](https://help.apple.com/xcode/mac/current/#/dev51a648b07) you have copied. Be sure to choose Embed & Sign from the pop-up menu in the Embed column.
 
@@ -228,4 +229,425 @@ To manually install <Vpd k="SDK" />:
 
 </PlatformWrapper>
 
+## Reduce app size
+<PlatformWrapper notAllowed="android">
+<PlatformWrapper notAllowed="ios">
+<PlatformWrapper notAllowed="macos">
+<PlatformWrapper notAllowed="windows-cpp">
 
+We are still working on the doc for this platform.
+</PlatformWrapper>
+</PlatformWrapper>
+</PlatformWrapper>
+</PlatformWrapper>
+
+<PlatformWrapper notAllowed="windows-csharp">
+<PlatformWrapper notAllowed="web">
+<PlatformWrapper notAllowed="unity">
+<PlatformWrapper notAllowed="flutter">
+<PlatformWrapper notAllowed="react-native">
+<PlatformWrapper notAllowed="electron">
+<PlatformWrapper notAllowed="cocos-creator">
+<PlatformWrapper notAllowed="cocos-2d-x">
+
+This section describes how to reduce the app size after integrating the Agora <Vg k="VIDEO" /> Native SDK.
+
+## Use the Voice SDK
+
+The Video SDK supports both audio and video functions, so the package size is larger. If you only need to use the audio functions, Agora recommends integrating the Voice SDK.
+
+## Remove unnecessary extension libraries
+
+As of v3.3.0, the SDK provides extension libraries, which are dynamic libraries that can be optionally integrated into a project. Extension libraries are named with the `extension` suffix, and information on the functionality and size of extension libraries is provided in [Extension libraries](#extension_libraries). If you do not need to use the functions provided by some extension libraries, you can reduce the size of the app by not integrating these extension libraries as described in the following sections.
+
+### Remove extension libraries during manual integration
+
+When you integrate the SDK by using the [SDK download link on the official website](https://docs.agora.io/en/sdks), you can directly remove the unnecessary extension library files.
+
+### Remove extension libraries when using CocoaPods
+
+<div class="alert note">This method applies to iOS/macOS SDKs v3.6.2 and later.</div>
+
+When you integrate the iOS/macOS SDK with CocoaPods, you can reduce the size of your app after integrating the SDK by using the `subspecs` field in the Podfile to specify the desired dynamic libraries and exclude unnecessary extension libraries. See [The subspecs fields](#subspec) for details on how dynamic libraries correspond to the `subspecs` fields.
+
+#### Sample code
+
+Example 1: When you integrate the iOS Video SDK v3.6.2 and use all extension libraries, the Podfile is as follows:
+
+```shell
+# platform :ios, '9.0'
+target 'Your App' do
+    pod 'AgoraRtcEngine_iOS', '3.6.2'
+end
+```
+
+Example 2: When you integrate the iOS Video SDK v3.6.2 without any extension libraries, the Podfile is as follows:
+
+```shell
+# platform :ios, '9.0'
+target 'Your App' do
+    pod 'AgoraRtcEngine_iOS', '3.6.2', :subspecs => ['RtcBasic']
+end
+```
+
+Example 3: When you integrate the iOS Video SDK v3.6.2 and use only the deep-learning noise reduction and super resolution extension libraries, the Podfile is as follows:
+
+
+```shell
+# platform :ios, '9.0'
+target 'Your App' do
+    pod 'AgoraRtcEngine_iOS', '3.6.2', :subspecs => ['RtcBasic', 'AINS', 'SuperResolution']
+end
+```
+
+When you fill in the pod command, make sure that the SDK with the specified version has the extension library that you specify and that the <code>subspecs</code> field of the extension library is correct; otherwise, an error is reported when you enter <code>pod install</code>. For example, if you fill in <code>pod 'AgoraRtcEngine_iOS', '3.6.2', :subspecs => ['RtcBasic', 'AgoraRtcAINS']</code>, an error is reported when you enter <code>pod install</code>.
+
+
+### Remove extension libraries when using Maven Central
+
+<div class="alert note">This method applies to Android SDKs v3.6.2 and later.</div>
+
+When you integrate the Android SDK with Maven Central, you can reduce the size of your app after integrating the SDK by modifying the `implementation` field in `dependencies` in the `/Gradle Scripts/build.gradle(Module: <projectname>.app)` file to specify the desired dynamic libraries and exclude unnecessary extension libraries. See [The implementation fields](#implementation) for details on how each file in the Android SDK corresponds to the `implementation` field.
+
+#### Sample code
+
+Example 1: When you integrate the Android Video SDK v3.6.2 and use all extension libraries, `dependencies` is as follows:
+
+```java
+dependencies {
+ implementation 'io.agora.rtc:full-sdk:3.6.2'
+ ...
+}
+```
+
+
+Example 2: When you integrate the Android Video SDK v3.6.2 without any extension libraries, `dependencies` is as follows:
+
+```java
+dependencies {
+ implementation 'io.agora.rtc:full-rtc-basic:3.6.2'
+ ...
+}
+```
+
+
+Example 3: When you integrate the Android Video SDK v3.6.2 and use only the deep-learning noise reduction and super resolution extension libraries, `dependencies` is as follows:
+
+```java
+dependencies {
+ def agora_sdk_version = "3.6.2"
+ // The following code contains $, so you must use "", not ''
+ implementation "io.agora.rtc:full-rtc-basic:${agora_sdk_version}"
+ implementation "io.agora.rtc:full-ains:${agora_sdk_version}"
+ implementation "io.agora.rtc:full-super-resolution:${agora_sdk_version}"
+ ...
+}
+```
+
+## Load .so files dynamically
+
+<div class="alert note"><li>This method applies to Android SDKs v3.6.2 and later.</li><li>This method applies to manual integration of the SDK only; it does not apply to integrations using Maven Central or JitPack.</li></div>
+
+Normally, you need to package required `.so` files when compiling the app, and the SDK loads `.so` files from the app's `nativeLibraryPath`.
+
+As of v3.6.2, the SDK provides the `setAgoraLibPath` method, which enables the app to dynamically load required `.so` files from its private directory when the app runs. This can reduce the app package size. Refer to the following steps to implement this function:
+
+1. Go to [SDK Downloads](https://docs.agora.io/en/sdks), download the latest version of the Agora Voice or Video SDK, and extract the files from the downloaded SDK package.
+2. Integrate `agora-rtc-sdk.jar` into your project.
+3. Upload the `.so` files for all architectures to your server, and ensure your app can download the `.so` files for its target architecture over the network.
+4. The app checks if the `.so` files for its target architecture exist when running. If not, the app downloads the appropriate `.so` files over the network and saves them to the app's private directory.
+5. Call `setAgoraLibPath`, and set `path` as the app's private directory where the `.so` files are stored.
+6. When calling `create` to initialize an `RtcEngine` instance, the SDK automatically loads the `.so` files according to the specified path.
+
+
+
+## Reference
+
+This section provides reference information for reducing the size of the app after integrating the SDK.
+
+
+<a name="extension_libraries"></a>
+
+### Extension libraries
+
+The SDK provides extension libraries, which are dynamic libraries that can be optionally integrated into a project. Extension libraries are named with the `extension` suffix, and information on the functionality and size of extension libraries is provided in the following tables.
+
+
+<div class="alert note">
+<li>If you are using a version of the macOS SDK earlier than v3.6.2, extension libraries have the <code>framework</code> suffix, not <code>xcframework</code> as in the following tables. See <Link to="../introduction/release-notes#v362">v3.6.2 Release Notes</Link>.</li>
+<li>Currently, the JND library, virtual background library, and super resolution library are only available on Android for the arm64-v8a and armeabi-v7a architectures; they are not available on Android for the x86 or x86_64 architectures.</li>
+</div>
+
+
+
+#### Deep-learning noise reduction library
+
+The SDK enables traditional noise reduction by default to reduce most of the stationary background noise. Deep-learning noise reduction adds non-stationary background noise reduction based on the traditional noise reduction. After integrating the deep-learning noise reduction library, you can call `enableDeepLearningDenoise` to enable the deep-learning noise reduction. See <Link to="../introduction/release-notes#v330">v3.3.0 Release Notes</Link>.
+
+The following table shows the extension library name for each platform and the increase in the app size after integration:
+
+| Platform | Architecture | Library name                          | App size increase after integration (KB) |
+| :------- | :----------- | :------------------------------------ | :--------------------------------------- |
+| Android  | arm64-v8a    | `libagora_ai_denoise_extension.so`    | 1,120                                    |
+| Android  | armeabi-v7a  | `libagora_ai_denoise_extension.so`    | 792                                      |
+| iOS      | arm64        | `AgoraAIDenoiseExtension.xcframework` | 502                                      |
+| iOS      | armv7        | `AgoraAIDenoiseExtension.xcframework` | 448                                      |
+| macOS    | arm64        | `AgoraAIDenoiseExtension.xcframework` | 496                                      |
+| macOS    | x86_64       | `AgoraAIDenoiseExtension.xcframework` | 588                                      |
+| Windows  | x86          | `libagora_ai_denoise_extension.dll`   | 5,312                                    |
+| Windows  | x86_64       | `libagora_ai_denoise_extension.dll`   | 5,424                                    |
+
+#### AV1 library (beta feature)
+
+The AV1 function improves the clarity of texts when users share the screen. To use this function, contact support@agora.io.
+
+The following table shows the extension library name for each platform and the increase in the app size after integration:
+
+| Platform | Architecture | Library name                      | App size increase after integration (KB) |
+| :------- | :----------- | :-------------------------------- | :--------------------------------------- |
+| Android  | arm64-v8a    | `libagora_dav1d_extension.so`     | 696                                      |
+| Android  | armeabi-v7a  | `libagora_dav1d_extension.so`     | 608                                      |
+| iOS      | arm64        | `AgoraDav1dExtension.xcframework` | 959                                      |
+| iOS      | armv7        | `AgoraDav1dExtension.xcframework` | 746                                      |
+| macOS    | x86_64       | `AgoraDav1dExtension.xcframework` | 1,316                                    |
+| Windows  | x86          | `libagora_dav1d_extension.dll`    | 1,252                                    |
+| Windows  | x86_64       | `libagora_dav1d_extension.dll`    | 1,756                                    |
+
+#### JND library (beta feature)
+
+<div class="alert warning">As of v3.7.0, the JND library is statically compiled in the SDK by default and no longer provided as an extension library. If you have integrated the JND library, remove the JND extension library from your project dependencies and recompile your project when upgrading to v3.7.0.</div>
+
+The JND (Just-noticeable difference) function is used for video perceptual coding, which reduces bandwidth consumption while keeping the same image quality. For example, this function can improve video smoothness in bandwidth-constrained scenarios and reduce network traffic consumption in mobile network scenarios. To use this function, contact support@agora.io.
+
+The following table shows the extension library name for each platform and the increase in the app size after integration:
+
+| Platform | Architecture | Library name                    | App size increase after integration (KB) |
+| :------- | :----------- | :------------------------------ | :--------------------------------------- |
+| Android  | arm64-v8a    | `libagora_jnd_extension.so`     | 1,172                                    |
+| Android  | armeabi-v7a  | `libagora_jnd_extension.so`     | 816                                      |
+| iOS      | arm64        | `AgoraJNDExtension.xcframework` | 78                                       |
+| iOS      | armv7        | `AgoraJNDExtension.xcframework` | 69                                       |
+| macOS    | arm64        | `AgoraJNDExtension.xcframework` | 720                                      |
+| macOS    | x86_64       | `AgoraJNDExtension.xcframework` | 616                                      |
+| Windows  | x86          | `libagora_jnd_extension.dll`    | 1,528                                    |
+| Windows  | x86_64       | `libagora_jnd_extension.dll`    | 1,948                                    |
+
+#### Virtual background library
+
+After integrating the virtual background library, you can call `enableVirtualBackground` to enable the virtual background. See <Link to="../introduction/release-notes#v350">v3.5.0 Release Notes</Link>.
+
+The following table shows the extension library name for each platform and the increase in the app size after integration:
+
+| Platform | Architecture | Library name                                  | App size increase after integration (KB) |
+| :------- | :----------- | :-------------------------------------------- | :--------------------------------------- |
+| Android  | arm64-v8a    | `libagora_segmentation_extension.so`          | 3,331                                    |
+| Android  | armeabi-v7a  | `libagora_segmentation_extension.so`          | 2,232                                    |
+| iOS      | arm64        | `AgoraVideoSegmentationExtension.xcframework` | 2,210                                    |
+| iOS      | armv7        | `AgoraVideoSegmentationExtension.xcframework` | 1,514                                    |
+| macOS    | arm64        | `AgoraVideoSegmentationExtension.xcframework` | 2,802                                    |
+| macOS    | x86_64       | `AgoraVideoSegmentationExtension.xcframework` | 2,449                                    |
+| Windows  | x86          | `libagora_segmentation_extension.dll`         | 4,401                                    |
+| Windows  | x86_64       | `libagora_segmentation_extension.dll`         | 5,193                                    |
+
+#### ROI library (beta feature）
+
+The ROI (Region of Interest) function is applied to the face or virtual background segmentation algorithm for face or portrait recognition. In the encoding process, higher quality encoding is used for the ROI to achieve a clearer face or portrait. To use this function, contact support@agora.io.
+
+The following table shows the extension library name for each platform and the increase in the app size after integration:
+
+| Platform | Architecture | Library name                   | App size increase after integration (KB) |
+| :------- | :----------- | :----------------------------- | :--------------------------------------- |
+| Android  | arm64-v8a    | `libagora_fd_extension.so`     | 1,558                                    |
+| Android  | armeabi-v7a  | `libagora_fd_extension.so`     | 977                                      |
+| iOS      | armv7        | `AgoraFDExtension.xcframework` | 2,602                                    |
+| iOS      | arm64        | `AgoraFDExtension.xcframework` | 3,534                                    |
+| macOS    | x86_64       | `AgoraFDExtension.xcframework` | 1,674                                    |
+| macOS    | arm64        | `AgoraFDExtension.xcframework` | 904                                      |
+| Windows  | x86_64       | `libagora_fd_extension.dll`    | 1,993                                    |
+| Windows  | x86          | `libagora_fd_extension.dll`    | 1,605                                    |
+
+#### Super resolution library (beta feature)
+
+After integrating the super resolution library, you can call `enableRemoteSuperResolution` to enable super resolution. See <Link to="../introduction/release-notes#v371">v3.5.1 and v3.7.1 Release Notes</Link>.
+
+The following table shows the extension library name for each platform and the increase in the app size after integration:
+
+| Platform | Architecture | Library name                                | App size increase after integration (KB) |
+| :------- | :----------- | :------------------------------------------ | :--------------------------------------- |
+| Android  | arm64-v8a    | `libagora_super_resolution_extension.so`    | 837                                      |
+| Android  | armeabi-v7a  | `libagora_super_resolution_extension.so`    | 550                                      |
+| iOS      | arm64        | `AgoraSuperResolutionExtension.xcframework` | 342                                      |
+| iOS      | armv7        | `AgoraSuperResolutionExtension.xcframework` | 340                                      |
+
+
+#### Video enhancement library
+
+As of v3.6.0, Agora provides a video enhancement library that provides the ability to apply basic image enhancement. As of v3.6.2, Agora also adds video noise reduction, low-light enhancement, and color enhancement features to the video enhancement library. See <Link to="../introduction/release-notes#v362">v3.6.0 and v3.6.2 Release Notes</Link>.
+
+You can call the following methods to enable the video enhancement features that you want after integrating the video enhancement library:
+
+- `setBeautyEffectOptions`: Sets basic image enhancement.
+- `setVideoDenoiserOptions`: Sets video noise reduction.
+- `setLowlightEnhanceOptions`: Sets low-light enhancement
+- `setColorEnhanceOptions`: Sets color enhancement.
+
+The following table shows the extension library name for each platform and the increase in the app size after integration:
+
+| Platform | Architecture | Library name                             | App size increase after integration (KB) |
+| :------- | :----------- | :--------------------------------------- | :--------------------------------------- |
+| Android  | arm64-v8a    | `libagora_video_process_extension.so`    | 1,290                                    |
+| Android  | armeabi-v7a  | `libagora_video_process_extension.so`    | 962                                      |
+| iOS      | arm64        | `AgoraVideoProcessExtension.xcframework` | 819                                      |
+| iOS      | armv7        | `AgoraVideoProcessExtension.xcframework` | 768                                      |
+| macOS    | arm64        | `AgoraVideoProcessExtension.xcframework` | 1,785                                    |
+| macOS    | x86_64       | `AgoraVideoProcessExtension.xcframework` | 895                                      |
+| Windows  | x86          | `libagora_video_process_extension.dll`   | 2,171                                    |
+| Windows  | x86_64       | `libagora_video_process_extension.dll`   | 2,541                                    |
+
+#### Full-format audio decoding library
+
+As of v3.6.2, the SDK provides the full-format audio decoding library, which optimizes the experience of calling `startAudioMixing` to play music files as follows:
+
+- Reduces issues of audio freezes or no audio when playing music files.
+- Increases the accuracy of the audio duration reported by `getAudioFileInfo`.
+- Supports more audio file formats.
+
+If you want to experience these improvements, ensure that you have integrated this dynamic library; if you do not need these improvements, you can remove this dynamic library when integrating the SDK, and the SDK automatically switches to the basic audio decoding library.
+
+The following table shows the extension library name for each platform and the increase in the app size after integration:
+
+
+| Platform | Architecture | Library name                                | App size increase after integration (KB) |
+| :------- | :----------- | :------------------------------------------ | :--------------------------------------- |
+| Android  | arm64-v8a    | `libagora-full-audio-format-extension.so`   | 4,436                                    |
+| Android  | armeabi-v7a  | `libagora-full-audio-format-extension.so`   | 4,088                                    |
+| iOS      | arm64        | `AgoraFullAudioFormatExtension.xcframework` | 4,432                                    |
+| iOS      | armv7        | `AgoraFullAudioFormatExtension.xcframework` | 3,808                                    |
+| macOS    | arm64        | `AgoraFullAudioFormatExtension.xcframework` | 4,720                                    |
+| macOS    | x86_64       | `AgoraFullAudioFormatExtension.xcframework` | 4,720                                    |
+| Windows  | x86          | `libagora-full-audio-format-extension.dll`  | 5,308                                    |
+| Windows  | x86_64       | `libagora-full-audio-format-extension.dll`  | 7,736                                    |
+
+#### Spatial audio effect library
+
+As of v3.7.0, Agora provides the spatial audio effect library, which can add a sense of space to remote users' audio and simulate the audio transmission process in the real world. This enables the local user to hear remote users with the spatial audio effect. To use this function, contact [support@agora.io](mailto:support@agora.io).
+
+The following table shows the extension library name for each platform and the increase in the app size after integration:
+
+| Platform | Architecture | Library name                             | App size increase after integration (KB) |
+| :------- | :----------- | :--------------------------------------- | :--------------------------------------- |
+| Android  | arm64-v8a    | `libagora_spatial_audio_extension.so`    | 3,832                                    |
+| Android  | armeabi-v7a  | `libagora_spatial_audio_extension.so`    | 3,824                                    |
+| iOS      | arm64        | `AgoraSpatialAudioExtension.xcframework` | 4,864                                    |
+| iOS      | armv7        | `AgoraSpatialAudioExtension.xcframework` | 4,352                                    |
+| macOS    | arm64        | `AgoraSpatialAudioExtension.xcframework` | 4,880                                    |
+| macOS    | x86_64       | `AgoraSpatialAudioExtension.xcframework` | 4,848                                    |
+| Windows  | x86          | `libagora_spatial_audio_extension.dll`   | 5,096                                    |
+| Windows  | x86_64       | `libagora_spatial_audio_extension.dll`   | 5,232                                    |
+
+#### ReplayKit library (iOS only)
+
+As of v3.7.0, the SDK provides the `startScreenCapture` method and the `AgoraReplayKitExtension.xcframework` extension library for screen sharing. See [Share the Screen](/3.x/video-calling/basic-features/screensharing).
+The following table shows the extension library name and the increase in the app size after integration:
+| Platform | Architecture | Library name                             | App size increase after integration (KB) |
+| :------- | :----------- | :--------------------------------------- | :--------------------------------------- |
+| iOS     | arm64       | `AgoraReplayKitExtension.xcframework` | 96        |
+| iOS     | armv7       | `AgoraReplayKitExtension.xcframework` | 96   |
+
+<a name="subspec"></a>
+
+### The subspecs fields
+
+When you integrate the iOS/macOS SDK with CocoaPods, you can reduce the size of your app after integrating the SDK by using the `subspecs` field in the Podfile to specify the desired dynamic libraries and exclude unnecessary extension libraries. For details on how dynamic libraries correspond to the `subspecs` fields, see the following tables:
+
+#### iOS Video SDK
+
+| Dynamic library                                              | Category | The `subspecs` field |
+| :----------------------------------------------------------- | :------- | :------------------- |
+| <li>`AgoraRtcKit.xcframework`</li><li>`AgoraCore.xcframework`</li><li>`Agorafdkaac.xcframework`</li><li>`AgoraSoundTouch.xcframework`</li><li>`Agoraffmpeg.xcframework`</li> | Required | RtcBasic             |
+| `AgoraAIDenoiseExtension.xcframework`                        | Optional | AINS                 |
+| `AgoraDav1dExtension.xcframework`                            | Optional | AV1Dec               |
+| `AgoraJNDExtension.xcframework`                              | Optional | JND (< 3.7.0 and ≥ 3.6.2) |
+| `AgoraVideoSegmentationExtension.xcframework`                | Optional | VirtualBackground    |
+| `AgoraFDExtension.xcframework`                               | Optional | ROIEnc               |
+| `AgoraSuperResolutionExtension.xcframework`                  | Optional | SuperResolution      |
+| `AgoraVideoProcessExtension.xcframework`                     | Optional | VideoPreprocess      |
+| `AgoraFullAudioFormatExtension.xcframework`                  | Optional | FullAudioFormat      |
+| `AgoraSpatialAudioExtension.xcframework`                     | Optional | SpatialAudio         |
+| `AgoraReplayKitExtension.xcframework`                        | Optional | ReplayKit (≥ 3.7.0)  |
+
+
+#### iOS Voice SDK
+
+| Dynamic library                                              | Category | The `subspecs` field |
+| :----------------------------------------------------------- | :------- | :------------------- |
+| <li>`AgoraRtcKit.xcframework`</li><li>`AgoraCore.xcframework`</li><li>`Agorafdkaac.xcframework`</li><li>`AgoraSoundTouch.xcframework`</li> | Required | RtcBasic             |
+| `AgoraAIDenoiseExtension.xcframework`                        | Optional | AINS                 |
+| `AgoraFullAudioFormatExtension.xcframework`                  | Optional | FullAudioFormat      |
+| `AgoraSpatialAudioExtension.xcframework`                     | Optional | SpatialAudio         |
+
+
+#### macOS Video SDK
+
+| Dynamic library                                              | Category | The `subspecs` field |
+| :----------------------------------------------------------- | :------- | :------------------- |
+| <li>`AgoraRtcKit.xcframework`</li><li>`AgoraCore.xcframework`</li><li>`Agorafdkaac.xcframework`</li><li>`AgoraSoundTouch.xcframework`</li><li>`Agoraffmpeg.xcframework`</li><li>`av1.framework`</li> | Required | RtcBasic             |
+| `AgoraAIDenoiseExtension.xcframework`                        | Optional | AINS                 |
+| `AgoraDav1dExtension.xcframework`                            | Optional | AV1Dec               |
+| `AgoraJNDExtension.xcframework`                              | Optional | JND (< 3.7.0 and ≥ 3.6.2)  |
+| `AgoraVideoSegmentationExtension.xcframework`                | Optional | VirtualBackground    |
+| `AgoraFDExtension.xcframework`                               | Optional | ROIEnc               |
+| `AgoraVideoProcessExtension.xcframework`                     | Optional | VideoPreprocess      |
+| `AgoraFullAudioFormatExtension.xcframework`                  | Optional | FullAudioFormat      |
+| `AgoraSpatialAudioExtension.xcframework`                     | Optional | SpatialAudio         |
+
+#### macOS Voice SDK
+
+| Dynamic library                                              | Category | The `subspecs` field |
+| :----------------------------------------------------------- | :------- | :------------------- |
+| <li>`AgoraRtcKit.xcframework`</li><li>`AgoraCore.xcframework`</li><li>`Agorafdkaac.xcframework`</li><li>`AgoraSoundTouch.xcframework`</li> | Required | RtcBasic             |
+| `AgoraAIDenoiseExtension.xcframework`                        | Optional | AINS                 |
+| `AgoraFullAudioFormatExtension.xcframework`                  | Optional | FullAudioFormat      |
+| `AgoraSpatialAudioExtension.xcframework`                     | Optional | SpatialAudio         |
+
+
+<a name="implementation"></a>
+
+### The implementation fields
+
+When you integrate the Android SDK with Maven Central, you can reduce the size of your app after integrating the SDK by modifying the `implementation` field in `dependencies` in the `/Gradle Scripts/build.gradle(Module: <projectname>.app)` file to specify the desired dynamic libraries and exclude unnecessary extension libraries. For details on how each file in the Android SDK corresponds to the `implementation` field, see the following tables:
+
+
+#### Android Video SDK
+
+| File                                                         | Category | The `implementation` field                                   |
+| :----------------------------------------------------------- | :------- | :----------------------------------------------------------- |
+| <li>`agora-rtc-sdk.jar`</li><li>Header files under the `include` folder</li><li>`libagora-rtc-sdk.so`</li><li>`libagora_fdkaac.so`</li><li>`libagora_mpg123.so`</li><li>`libagora-core.so`</li><li>`libagora-soundtouch.so`</li><li>`libagora-ffmpeg.so`</li> | Required | io.agora.rtc:full-rtc-basic                                  |
+| `libagora_ai_denoise_extension.so`                           | Optional | <li>io.agora.rtc:full-ains (v3.6.2)</li><li>io.agora.rtc::ains (as of v3.7.0)</li> |
+| `libagora_dav1d_extension.so`                                | Optional | io.agora.rtc:full-av1-dec                                    |
+| `libagora_jnd_extension.so`                                  | Optional | io.agora.rtc:full-jnd (< 3.7.0 and ≥ 3.6.2)                                        |
+| `libagora_segmentation_extension.so`                         | Optional | io.agora.rtc:full-virtual-background                         |
+| `libagora_fd_extension.so`                                   | Optional | io.agora.rtc:full-roi-enc                                    |
+| `libagora_super_resolution_extension.so`                     | Optional | io.agora.rtc:full-super-resolution                           |
+| `libagora_video_process_extension.so`                        | Optional | io.agora.rtc:full-video-preprocess                           |
+| `libagora_full_audio_format_extension.so`                    | Optional | <li>io.agora.rtc:full-full-audio-format (v3.6.2)</li><li>io.agora.rtc:full-audio-format (as of v3.7.0)</li> |
+| `libagora_spatial_audio_extension.so`                        | Optional | io.agora.rtc:spatial-audio                                   |
+
+
+#### Android Voice SDK
+
+| File                                                         | Category | The `implementation` field                                   |
+| :----------------------------------------------------------- | :------- | :----------------------------------------------------------- |
+| <li>`agora-rtc-sdk.jar`</li><li>Header files under the `include` folder</li><li>`libagora-rtc-sdk.so`</li><li>`libagora_fdkaac.so`</li><li>`libagora_mpg123.so`</li><li>`libagora-core.so`</li><li>`libagora-soundtouch.so`</li> | Required | io.agora.rtc:voice-rtc-basic                                 |
+| `libagora_ai_denoise_extension.so`                           | Optional | <li>io.agora.rtc:voice-ains (v3.6.2)</li><li>io.agora.rtc::ains (as of v3.7.0) </li> |
+| `libagora_full_audio_format_extension.so`                    | Optional | <li>io.agora.rtc:voice-full-audio-format (v3.6.2)</li><li>io.agora.rtc:full-audio-format (as of v3.7.0)</li> |
+| `libagora_spatial_audio_extension.so`                        | Optional | io.agora.rtc:spatial-audio                                   |
+
+</PlatformWrapper>
+</PlatformWrapper>
+</PlatformWrapper>
+</PlatformWrapper>
+</PlatformWrapper>
+</PlatformWrapper>
+</PlatformWrapper>
+</PlatformWrapper>
